@@ -1,0 +1,7 @@
+### Get All Contacts
+GET http://localhost:8080/contacts
+
+###
+
+### Get One Contact
+GET http://localhost:8080/contacts/PUT_CONTACT_ID_HERE
