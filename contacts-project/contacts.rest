@@ -1,7 +1,45 @@
-### Get All Contacts
-GET http://localhost:8080/contacts
+### GET ALL
+
+GET http://localhost:3000/contacts
 
 ###
 
-### Get One Contact
-GET http://localhost:8080/contacts/PUT_CONTACT_ID_HERE
+### GET ONE
+
+GET http://localhost:3000/contacts/PUT_CONTACT_ID_HERE
+
+###
+
+### CREATE CONTACT
+
+POST http://localhost:3000/contacts
+Content-Type: application/json
+
+{
+    "firstName":"Mary",
+    "lastName":"Jones",
+    "email":"mary@gmail.com",
+    "favoriteColor":"Pink",
+    "birthday":"1995-08-10"
+}
+
+###
+
+### UPDATE CONTACT
+
+PUT http://localhost:3000/contacts/PUT_CONTACT_ID_HERE
+Content-Type: application/json
+
+{
+    "firstName":"Mary",
+    "lastName":"Jones",
+    "email":"mary@gmail.com",
+    "favoriteColor":"Red",
+    "birthday":"1995-08-10"
+}
+
+###
+
+### DELETE CONTACT
+
+DELETE http://localhost:3000/contacts/PUT_CONTACT_ID_HERE
