@@ -1,0 +1,170 @@
+{
+  "openapi": "3.0.0",
+
+  "info": {
+    "title": "Library Management API",
+    "version": "1.0.0",
+    "description": "CRUD API for managing books and authors using MongoDB"
+  },
+
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+
+
+  "paths": {
+
+    "/books": {
+
+      "get": {
+
+        "summary": "Get all books",
+
+        "responses": {
+
+          "200": {
+
+            "description": "Books returned successfully"
+
+          }
+
+        }
+
+      },
+
+
+      "post": {
+
+        "summary": "Create a new book",
+
+        "responses": {
+
+          "201": {
+
+            "description": "Book created successfully"
+
+          }
+
+        }
+
+      }
+
+    },
+
+
+    "/books/{id}": {
+
+      "get": {
+
+        "summary": "Get a single book",
+
+        "parameters": [
+
+          {
+
+            "name": "id",
+
+            "in": "path",
+
+            "required": true,
+
+            "schema": {
+
+              "type": "string"
+
+            }
+
+          }
+
+        ],
+
+        "responses": {
+
+          "200": {
+
+            "description": "Book found"
+
+          }
+
+        }
+
+      },
+
+
+      "put": {
+
+        "summary": "Update a book"
+
+      },
+
+
+      "delete": {
+
+        "summary": "Delete a book"
+
+      }
+
+    },
+
+
+
+    "/authors": {
+
+
+      "get": {
+
+        "summary": "Get all authors",
+
+        "responses": {
+
+          "200": {
+
+            "description": "Authors returned"
+
+          }
+
+        }
+
+      },
+
+
+      "post": {
+
+        "summary": "Create author"
+
+      }
+
+    },
+
+
+
+    "/authors/{id}": {
+
+
+      "get": {
+
+        "summary": "Get single author"
+
+      },
+
+
+      "put": {
+
+        "summary": "Update author"
+
+      },
+
+
+      "delete": {
+
+        "summary": "Delete author"
+
+      }
+
+    }
+
+  }
+
+}
