@@ -1,5 +1,6 @@
 import express from "express";
 
+
 import {
 
     getBooks,
@@ -11,37 +12,80 @@ import {
 } from "../controllers/booksController.js";
 
 
+import { authenticate } from "../middleware/authenticate.js";
+
+
+import {
+
+    bookValidation,
+    validateRequest
+
+} from "../middleware/validation.js";
+
+
+
 const router = express.Router();
 
 
 
 // GET ALL BOOKS
+// Protected route
 
-router.get("/", getBooks);
+router.get(
+    "/",
+    authenticate,
+    getBooks
+);
 
 
 
 // GET SINGLE BOOK
+// Protected route
 
-router.get("/:id", getBook);
+router.get(
+    "/:id",
+    authenticate,
+    getBook
+);
+
 
 
 
 // CREATE BOOK
+// Protected + Validation
 
-router.post("/", createBook);
+router.post(
+    "/",
+    authenticate,
+    bookValidation,
+    validateRequest,
+    createBook
+);
+
 
 
 
 // UPDATE BOOK
+// Protected + Validation
 
-router.put("/:id", updateBook);
+router.put(
+    "/:id",
+    authenticate,
+    bookValidation,
+    validateRequest,
+    updateBook
+);
+
 
 
 
 // DELETE BOOK
 
-router.delete("/:id", deleteBook);
+router.delete(
+    "/:id",
+    authenticate,
+    deleteBook
+);
 
 
 

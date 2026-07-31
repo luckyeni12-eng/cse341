@@ -2,8 +2,8 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Library Management API",
-    "version": "1.0.0",
-    "description": "A RESTful API for managing books and authors using MongoDB."
+    "version": "2.0.0",
+    "description": "Library Management API with MongoDB CRUD operations and JWT authentication"
   },
   "servers": [
     {
@@ -12,7 +12,36 @@
     }
   ],
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
+      "User": {
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "admin"
+          },
+          "email": {
+            "type": "string",
+            "example": "admin@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        }
+      },
       "Book": {
         "type": "object",
         "required": [
@@ -58,61 +87,136 @@
             "type": "boolean",
             "example": true
           }
-        },
-        "example": {
-          "title": "The Hobbit",
-          "isbn": "9780261103344",
-          "author": "J.R.R. Tolkien",
-          "category": "Fantasy",
-          "publisher": "HarperCollins",
-          "publicationYear": 1937,
-          "pages": 310,
-          "available": true
         }
       },
       "Author": {
         "type": "object",
         "required": [
-          "name",
+          "firstName",
+          "lastName",
           "birthYear",
-          "nationality"
+          "country",
+          "email"
         ],
         "properties": {
-          "name": {
+          "firstName": {
             "type": "string",
-            "example": "J.R.R. Tolkien"
+            "example": "J.R.R."
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Tolkien"
           },
           "birthYear": {
             "type": "integer",
             "example": 1892
           },
-          "nationality": {
+          "country": {
             "type": "string",
-            "example": "British"
+            "example": "United Kingdom"
+          },
+          "email": {
+            "type": "string",
+            "example": "tolkien@example.com"
           }
-        },
-        "example": {
-          "name": "J.R.R. Tolkien",
-          "birthYear": 1892,
-          "nationality": "British"
         }
       }
     }
   },
+
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+
   "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register a new user",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
+          },
+          "400": {
+            "description": "User already exists"
+          }
+        }
+      }
+    },
+
+    "/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": [
+          "Authentication"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "email": "admin@gmail.com",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        }
+      }
+    },
+
+    "/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          }
+        }
+      }
+    },
+
     "/books": {
       "get": {
         "summary": "Get all books",
-        "description": "Returns a list of all books.",
+        "tags": [
+          "Books"
+        ],
         "responses": {
           "200": {
-            "description": "Books retrieved successfully"
+            "description": "Books returned successfully"
           }
         }
       },
       "post": {
         "summary": "Create a new book",
-        "description": "Creates a new book in the database.",
+        "tags": [
+          "Books"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -128,21 +232,23 @@
             "description": "Book created successfully"
           },
           "400": {
-            "description": "Invalid input"
+            "description": "Validation error"
           }
         }
       }
     },
+
     "/books/{id}": {
       "get": {
         "summary": "Get a single book",
-        "description": "Retrieve a book by its ID.",
+        "tags": [
+          "Books"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB Book ID",
             "schema": {
               "type": "string"
             }
@@ -150,7 +256,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Book retrieved successfully"
+            "description": "Book returned successfully"
           },
           "404": {
             "description": "Book not found"
@@ -159,7 +265,9 @@
       },
       "put": {
         "summary": "Update a book",
-        "description": "Update an existing book.",
+        "tags": [
+          "Books"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -183,15 +291,14 @@
         "responses": {
           "200": {
             "description": "Book updated successfully"
-          },
-          "404": {
-            "description": "Book not found"
           }
         }
       },
       "delete": {
         "summary": "Delete a book",
-        "description": "Delete a book by ID.",
+        "tags": [
+          "Books"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -205,26 +312,28 @@
         "responses": {
           "200": {
             "description": "Book deleted successfully"
-          },
-          "404": {
-            "description": "Book not found"
           }
         }
       }
     },
+
     "/authors": {
       "get": {
         "summary": "Get all authors",
-        "description": "Returns a list of all authors.",
+        "tags": [
+          "Authors"
+        ],
         "responses": {
           "200": {
-            "description": "Authors retrieved successfully"
+            "description": "Authors returned successfully"
           }
         }
       },
       "post": {
         "summary": "Create a new author",
-        "description": "Creates a new author.",
+        "tags": [
+          "Authors"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -238,23 +347,22 @@
         "responses": {
           "201": {
             "description": "Author created successfully"
-          },
-          "400": {
-            "description": "Invalid input"
           }
         }
       }
     },
+
     "/authors/{id}": {
       "get": {
         "summary": "Get a single author",
-        "description": "Retrieve an author by ID.",
+        "tags": [
+          "Authors"
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB Author ID",
             "schema": {
               "type": "string"
             }
@@ -262,16 +370,15 @@
         ],
         "responses": {
           "200": {
-            "description": "Author retrieved successfully"
-          },
-          "404": {
-            "description": "Author not found"
+            "description": "Author returned successfully"
           }
         }
       },
       "put": {
         "summary": "Update an author",
-        "description": "Update an existing author.",
+        "tags": [
+          "Authors"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -295,15 +402,14 @@
         "responses": {
           "200": {
             "description": "Author updated successfully"
-          },
-          "404": {
-            "description": "Author not found"
           }
         }
       },
       "delete": {
         "summary": "Delete an author",
-        "description": "Delete an author by ID.",
+        "tags": [
+          "Authors"
+        ],
         "parameters": [
           {
             "name": "id",
@@ -317,9 +423,6 @@
         "responses": {
           "200": {
             "description": "Author deleted successfully"
-          },
-          "404": {
-            "description": "Author not found"
           }
         }
       }

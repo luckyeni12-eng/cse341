@@ -2,26 +2,36 @@ import Book from "../models/Book.js";
 
 
 
+
 // GET ALL BOOKS
 
 export async function getBooks(req,res){
 
 try{
 
+
 const books = await Book.find();
+
 
 res.status(200).json(books);
 
 
+
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
 
+
 }
 
 }
+
+
 
 
 
@@ -31,30 +41,46 @@ export async function getBook(req,res){
 
 try{
 
-const book = await Book.findById(req.params.id);
+
+const book = await Book.findById(
+    req.params.id
+);
+
 
 
 if(!book){
 
 return res.status(404).json({
+
 message:"Book not found"
+
 });
 
 }
+
 
 
 res.status(200).json(book);
 
 
+
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
 
+
 }
 
 }
+
+
+
+
 
 
 
@@ -68,7 +94,9 @@ try{
 const book = new Book(req.body);
 
 
+
 await book.save();
+
 
 
 res.status(201).json(book);
@@ -77,13 +105,23 @@ res.status(201).json(book);
 
 }catch(error){
 
+
+
 res.status(400).json({
-message:error.message
+
+message:"Unable to create book",
+
+error:error.message
+
 });
 
+
 }
 
 }
+
+
+
 
 
 
@@ -109,11 +147,16 @@ runValidators:true
 );
 
 
+
 if(!book){
 
+
 return res.status(404).json({
+
 message:"Book not found"
+
 });
+
 
 }
 
@@ -125,14 +168,21 @@ res.status(200).json(book);
 
 }catch(error){
 
+
 res.status(400).json({
-message:error.message
+
+message:"Unable to update book",
+
+error:error.message
+
 });
 
+
+}
+
 }
 
 
-}
 
 
 
@@ -144,14 +194,20 @@ export async function deleteBook(req,res){
 try{
 
 
-const book = await Book.findByIdAndDelete(req.params.id);
+const book = await Book.findByIdAndDelete(
+
+req.params.id
+
+);
 
 
 
 if(!book){
 
 return res.status(404).json({
+
 message:"Book not found"
+
 });
 
 }
@@ -160,18 +216,22 @@ message:"Book not found"
 
 res.status(200).json({
 
-message:"Book deleted"
+message:"Book deleted successfully"
 
 });
+
 
 
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
 
-}
 
+}
 
 }

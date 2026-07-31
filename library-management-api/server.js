@@ -4,8 +4,10 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger/swagger.json" with { type: "json" };
 
+
 import booksRoutes from "./routes/booksRoutes.js";
 import authorsRoutes from "./routes/authorsRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 
 // Load environment variables
@@ -19,7 +21,7 @@ const app = express();
 app.use(express.json());
 
 
-// Swagger Documentation
+// Swagger
 app.use(
     "/api-docs",
     swaggerUi.serve,
@@ -27,57 +29,96 @@ app.use(
 );
 
 
-// Routes
+
+// Authentication Routes
+app.use("/auth", authRoutes);
+
+
+// Protected CRUD Routes
 app.use("/books", booksRoutes);
+
 app.use("/authors", authorsRoutes);
 
 
+
 // Home Route
-app.get("/", (req, res) => {
-    res.send("Library Management API Running");
+app.get("/", (req,res)=>{
+
+    res.send(
+        "Library Management API Running"
+    );
+
 });
+
 
 
 // 404 Handler
-app.use((req, res) => {
+app.use((req,res)=>{
+
     res.status(404).json({
-        message: "Route not found"
+
+        message:"Route not found"
+
     });
+
 });
+
 
 
 // Error Handler
-app.use((err, req, res, next) => {
+app.use((err,req,res,next)=>{
+
 
     console.error(err);
 
+
     res.status(500).json({
-        message: "Internal Server Error"
+
+        message:"Internal Server Error"
+
     });
+
 
 });
 
 
-// Port with fallback value
+
+
+// Port
 const PORT = process.env.PORT || 3000;
 
 
-// Connect to MongoDB and start server
+
+// MongoDB Connection
+
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
 
-        console.log("Connected to MongoDB");
+.then(()=>{
 
 
-        app.listen(PORT, () => {
+    console.log("Connected to MongoDB");
 
-            console.log(`Server running at http://localhost:${PORT}`);
 
-        });
+    app.listen(PORT,()=>{
 
-    })
-    .catch(error => {
 
-        console.error("MongoDB connection error:", error);
+        console.log(
+            `Server running at http://localhost:${PORT}`
+        );
+
 
     });
+
+
+})
+
+.catch(error=>{
+
+
+    console.error(
+        "MongoDB connection error:",
+        error
+    );
+
+
+});
