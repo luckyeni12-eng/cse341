@@ -1,59 +1,42 @@
 import express from "express";
 
-
 import {
-
     getBooks,
     getBook,
     createBook,
     updateBook,
     deleteBook
-
 } from "../controllers/booksController.js";
-
 
 import { authenticate } from "../middleware/authenticate.js";
 
-
 import {
-
     bookValidation,
     validateRequest
-
 } from "../middleware/validation.js";
-
 
 
 const router = express.Router();
 
 
-
 // GET ALL BOOKS
-// Protected route
-
+// Public route
 router.get(
     "/",
-    authenticate,
     getBooks
 );
 
 
-
 // GET SINGLE BOOK
-// Protected route
-
+// Public route
 router.get(
     "/:id",
-    authenticate,
     getBook
 );
 
 
-
-
 // CREATE BOOK
 // Protected + Validation
-
 router.post(
     "/",
     authenticate,
@@ -63,11 +46,8 @@ router.post(
 );
 
 
-
-
 // UPDATE BOOK
 // Protected + Validation
-
 router.put(
     "/:id",
     authenticate,
@@ -77,16 +57,13 @@ router.put(
 );
 
 
-
-
 // DELETE BOOK
-
+// Protected
 router.delete(
     "/:id",
     authenticate,
     deleteBook
 );
-
 
 
 export default router;
