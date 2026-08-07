@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger/swagger.json" with { type: "json" };
 
-
 import booksRoutes from "./routes/booksRoutes.js";
 import authorsRoutes from "./routes/authorsRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -14,11 +13,20 @@ import authRoutes from "./routes/authRoutes.js";
 dotenv.config();
 
 
+// Temporary JWT debug log
+console.log(
+    "Loaded JWT_SECRET:",
+    process.env.JWT_SECRET
+);
+
+
+
 const app = express();
 
 
 // Middleware
 app.use(express.json());
+
 
 
 // Swagger
@@ -34,6 +42,7 @@ app.use(
 app.use("/auth", authRoutes);
 
 
+
 // Protected CRUD Routes
 app.use("/books", booksRoutes);
 
@@ -42,7 +51,7 @@ app.use("/authors", authorsRoutes);
 
 
 // Home Route
-app.get("/", (req,res)=>{
+app.get("/", (req, res) => {
 
     res.send(
         "Library Management API Running"
@@ -53,11 +62,11 @@ app.get("/", (req,res)=>{
 
 
 // 404 Handler
-app.use((req,res)=>{
+app.use((req, res) => {
 
     res.status(404).json({
 
-        message:"Route not found"
+        message: "Route not found"
 
     });
 
@@ -66,7 +75,7 @@ app.use((req,res)=>{
 
 
 // Error Handler
-app.use((err,req,res,next)=>{
+app.use((err, req, res, next) => {
 
 
     console.error(err);
@@ -74,13 +83,12 @@ app.use((err,req,res,next)=>{
 
     res.status(500).json({
 
-        message:"Internal Server Error"
+        message: "Internal Server Error"
 
     });
 
 
 });
-
 
 
 
@@ -90,16 +98,17 @@ const PORT = process.env.PORT || 3000;
 
 
 // MongoDB Connection
-
 mongoose.connect(process.env.MONGODB_URI)
 
-.then(()=>{
+.then(() => {
 
 
-    console.log("Connected to MongoDB");
+    console.log(
+        "Connected to MongoDB"
+    );
 
 
-    app.listen(PORT,()=>{
+    app.listen(PORT, () => {
 
 
         console.log(
@@ -112,7 +121,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 })
 
-.catch(error=>{
+.catch(error => {
 
 
     console.error(

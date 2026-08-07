@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 
-
 // REGISTER USER
 export async function register(req, res) {
 
@@ -14,7 +13,6 @@ export async function register(req, res) {
             email,
             password
         } = req.body;
-
 
 
         // Check if user already exists
@@ -34,13 +32,11 @@ export async function register(req, res) {
         }
 
 
-
         // Encrypt password
         const hashedPassword = await bcrypt.hash(
             password,
             10
         );
-
 
 
         // Create new user
@@ -53,7 +49,6 @@ export async function register(req, res) {
             password: hashedPassword
 
         });
-
 
 
         res.status(201).json({
@@ -73,7 +68,6 @@ export async function register(req, res) {
         });
 
 
-
     } catch (error) {
 
 
@@ -87,9 +81,6 @@ export async function register(req, res) {
     }
 
 }
-
-
-
 
 
 
@@ -155,6 +146,14 @@ export async function login(req, res) {
 
 
 
+        // Check JWT secret before creating token
+        console.log(
+            "Signing secret:",
+            process.env.JWT_SECRET
+        );
+
+
+
         // Generate JWT token
         const token = jwt.sign(
 
@@ -207,12 +206,8 @@ export async function login(req, res) {
 
 
 
-
-
-
 // LOGOUT USER
 export async function logout(req, res) {
-
 
     try {
 
