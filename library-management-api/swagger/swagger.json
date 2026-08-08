@@ -1,16 +1,38 @@
 {
   "openapi": "3.0.0",
+
   "info": {
     "title": "Library Management API",
-    "version": "2.0.0",
-    "description": "Library Management API with MongoDB CRUD operations and JWT authentication"
+    "description": "API for managing books and authors with CRUD operations and authentication",
+    "version": "2.0.0"
   },
+
   "servers": [
     {
       "url": "http://localhost:3000",
-      "description": "Local Development Server"
+      "description": "Local server"
+    },
+    {
+      "url": "https://your-render-app.onrender.com",
+      "description": "Production server"
     }
   ],
+
+  "tags": [
+    {
+      "name": "Books",
+      "description": "Book management endpoints"
+    },
+    {
+      "name": "Authors",
+      "description": "Author management endpoints"
+    },
+    {
+      "name": "Authentication",
+      "description": "User authentication endpoints"
+    }
+  ],
+
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -19,6 +41,7 @@
         "bearerFormat": "JWT"
       }
     },
+
     "schemas": {
       "User": {
         "type": "object",
@@ -34,14 +57,17 @@
           },
           "email": {
             "type": "string",
+            "format": "email",
             "example": "admin@gmail.com"
           },
           "password": {
             "type": "string",
+            "format": "password",
             "example": "password123"
           }
         }
       },
+
       "Book": {
         "type": "object",
         "required": [
@@ -55,33 +81,41 @@
           "available"
         ],
         "properties": {
+          "_id": {
+            "type": "string",
+            "example": "64f123456789abcdef123456"
+          },
           "title": {
             "type": "string",
-            "example": "The Hobbit"
+            "example": "Animal Farm"
           },
           "isbn": {
             "type": "string",
-            "example": "9780261103344"
+            "example": "9780451526342"
           },
           "author": {
             "type": "string",
-            "example": "J.R.R. Tolkien"
+            "example": "George Orwell"
           },
           "category": {
             "type": "string",
-            "example": "Fantasy"
+            "example": "Political Satire"
           },
           "publisher": {
             "type": "string",
-            "example": "HarperCollins"
+            "example": "Secker & Warburg"
           },
           "publicationYear": {
             "type": "integer",
-            "example": 1937
+            "example": 1945
           },
           "pages": {
             "type": "integer",
-            "example": 310
+            "example": 112
+          },
+          "language": {
+            "type": "string",
+            "example": "English"
           },
           "available": {
             "type": "boolean",
@@ -89,6 +123,7 @@
           }
         }
       },
+
       "Author": {
         "type": "object",
         "required": [
@@ -99,6 +134,10 @@
           "email"
         ],
         "properties": {
+          "_id": {
+            "type": "string",
+            "example": "64f123456789abcdef123456"
+          },
           "firstName": {
             "type": "string",
             "example": "J.R.R."
@@ -117,13 +156,13 @@
           },
           "email": {
             "type": "string",
+            "format": "email",
             "example": "tolkien@example.com"
           }
         }
       }
     }
   },
-
 
   "paths": {
     "/auth/register": {
@@ -147,7 +186,7 @@
             "description": "User registered successfully"
           },
           "400": {
-            "description": "User already exists"
+            "description": "User already exists or validation error"
           }
         }
       }
@@ -163,9 +202,24 @@
           "required": true,
           "content": {
             "application/json": {
-              "example": {
-                "email": "admin@gmail.com",
-                "password": "password123"
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "admin@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "password123"
+                  }
+                }
               }
             }
           }
@@ -187,14 +241,17 @@
         "tags": [
           "Authentication"
         ],
-"security": [
-  {
-    "bearerAuth": []
-  }
-],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Logout successful"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -208,20 +265,31 @@
         ],
         "responses": {
           "200": {
-            "description": "Books returned successfully"
+            "description": "Books returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
           }
         }
       },
+
       "post": {
         "summary": "Create a new book",
         "tags": [
           "Books"
         ],
         "security": [
-  {
-    "bearerAuth": []
-  }
-],
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -238,6 +306,9 @@
           },
           "400": {
             "description": "Validation error"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -256,29 +327,37 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "64f123456789abcdef123456"
           }
         ],
         "responses": {
           "200": {
-            "description": "Book returned successfully"
+            "description": "Book returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
           },
           "404": {
             "description": "Book not found"
           }
         }
       },
+
       "put": {
         "summary": "Update a book",
         "tags": [
           "Books"
         ],
-
         "security": [
-  {
-    "bearerAuth": []
-  }
-],
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -286,7 +365,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "64f123456789abcdef123456"
           }
         ],
         "requestBody": {
@@ -302,20 +382,26 @@
         "responses": {
           "200": {
             "description": "Book updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Book not found"
           }
         }
       },
+
       "delete": {
         "summary": "Delete a book",
         "tags": [
           "Books"
         ],
-
         "security": [
-  {
-    "bearerAuth": []
-  }
-],
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -323,12 +409,19 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "64f123456789abcdef123456"
           }
         ],
         "responses": {
           "200": {
             "description": "Book deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Book not found"
           }
         }
       }
@@ -342,21 +435,31 @@
         ],
         "responses": {
           "200": {
-            "description": "Authors returned successfully"
+            "description": "Authors returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Author"
+                  }
+                }
+              }
+            }
           }
         }
       },
+
       "post": {
         "summary": "Create a new author",
         "tags": [
           "Authors"
         ],
-
         "security": [
-  {
-    "bearerAuth": []
-  }
-],
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -370,6 +473,9 @@
         "responses": {
           "201": {
             "description": "Author created successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -388,26 +494,37 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "64f123456789abcdef123456"
           }
         ],
         "responses": {
           "200": {
-            "description": "Author returned successfully"
+            "description": "Author returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Author not found"
           }
         }
       },
+
       "put": {
         "summary": "Update an author",
         "tags": [
           "Authors"
         ],
-
         "security": [
-  {
-    "bearerAuth": []
-  }
-],
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -415,7 +532,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "64f123456789abcdef123456"
           }
         ],
         "requestBody": {
@@ -431,20 +549,26 @@
         "responses": {
           "200": {
             "description": "Author updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Author not found"
           }
         }
       },
+
       "delete": {
         "summary": "Delete an author",
         "tags": [
           "Authors"
         ],
-
         "security": [
-  {
-    "bearerAuth": []
-  }
-],
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -452,12 +576,19 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "64f123456789abcdef123456"
           }
         ],
         "responses": {
           "200": {
             "description": "Author deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Author not found"
           }
         }
       }

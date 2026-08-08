@@ -1,57 +1,131 @@
 import express from "express";
 
-import {
-    getAuthors,
-    getAuthor,
-    createAuthor,
-    updateAuthor,
-    deleteAuthor
-} from "../controllers/authorsController.js";
-
-import { authenticate } from "../middleware/authenticate.js";
 
 import {
-    authorValidation,
-    validateRequest
-} from "../middleware/validation.js";
+
+
+getAuthors,
+
+getAuthor,
+
+createAuthor,
+
+updateAuthor,
+
+deleteAuthor
+
+
+}
+
+from "../controllers/authorsController.js";
+
+
+
+import {
+
+authenticate
+
+}
+
+from "../middleware/authenticate.js";
+
+
 
 const router = express.Router();
 
-// GET ALL AUTHORS (Public)
+
+
+
+
+
+// GET ALL AUTHORS
+
+
 router.get(
-    "/",
-    getAuthors
+
+"/",
+
+getAuthors
+
 );
 
-// GET SINGLE AUTHOR (Public)
+
+
+
+
+
+
+// GET SINGLE AUTHOR
+
+
 router.get(
-    "/:id",
-    getAuthor
+
+"/:id",
+
+getAuthor
+
 );
 
-// CREATE AUTHOR (Protected)
+
+
+
+
+
+
+// CREATE AUTHOR
+
+
 router.post(
-    "/",
-    authenticate,
-    authorValidation,
-    validateRequest,
-    createAuthor
+
+"/",
+
+authenticate,
+
+createAuthor
+
 );
 
-// UPDATE AUTHOR (Protected)
+
+
+
+
+
+
+// UPDATE AUTHOR
+
+
 router.put(
-    "/:id",
-    authenticate,
-    authorValidation,
-    validateRequest,
-    updateAuthor
+
+"/:id",
+
+authenticate,
+
+updateAuthor
+
 );
 
-// DELETE AUTHOR (Protected)
+
+
+
+
+
+
+// DELETE AUTHOR
+
+
 router.delete(
-    "/:id",
-    authenticate,
-    deleteAuthor
+
+"/:id",
+
+authenticate,
+
+deleteAuthor
+
 );
+
+
+
+
+
 
 export default router;

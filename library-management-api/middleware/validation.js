@@ -1,72 +1,114 @@
-import { body, validationResult } from "express-validator";
+import {
+body,
+validationResult
+}
 
-
-
-export const validateRequest = (req,res,next)=>{
-
-
-    const errors = validationResult(req);
-
-
-
-    if(!errors.isEmpty()){
-
-
-        return res.status(400).json({
-
-            errors: errors.array()
-
-        });
-
-
-    }
-
-
-
-    next();
-
-};
+from "express-validator";
 
 
 
 
-// BOOK VALIDATION
 
 export const bookValidation = [
 
-    body("title")
-    .notEmpty()
-    .withMessage("Title is required"),
 
 
-    body("isbn")
-    .notEmpty()
-    .withMessage("ISBN is required"),
+body("title")
+
+.notEmpty()
+
+.withMessage(
+"Title is required"
+),
 
 
-    body("author")
-    .notEmpty()
-    .withMessage("Author is required"),
+
+body("isbn")
+
+.notEmpty()
+
+.withMessage(
+"ISBN is required"
+),
 
 
-    body("category")
-    .notEmpty()
-    .withMessage("Category is required"),
 
 
-    body("publisher")
-    .notEmpty()
-    .withMessage("Publisher is required"),
+body("author")
+
+.notEmpty()
+
+.withMessage(
+"Author is required"
+),
 
 
-    body("publicationYear")
-    .isNumeric()
-    .withMessage("Publication year must be a number"),
 
 
-    body("pages")
-    .isInt({min:1})
-    .withMessage("Pages must be greater than 0")
+body("category")
+
+.notEmpty()
+
+.withMessage(
+"Category is required"
+),
+
+
+
+
+
+body("publisher")
+
+.notEmpty()
+
+.withMessage(
+"Publisher is required"
+),
+
+
+
+
+body("publicationYear")
+
+.isNumeric()
+
+.withMessage(
+"Publication year must be numeric"
+),
+
+
+
+
+body("pages")
+
+.isNumeric()
+
+.withMessage(
+"Pages must be numeric"
+),
+
+
+
+
+body("language")
+
+.notEmpty()
+
+.withMessage(
+"Language is required"
+),
+
+
+
+
+body("available")
+
+.isBoolean()
+
+.withMessage(
+"Available must be true or false"
+)
+
 
 
 ];
@@ -74,33 +116,98 @@ export const bookValidation = [
 
 
 
-// AUTHOR VALIDATION
+
+
+
+
+export const validateRequest =
+(req,res,next)=>{
+
+
+const errors =
+validationResult(req);
+
+
+
+if(!errors.isEmpty()){
+
+
+return res.status(400).json({
+
+errors:errors.array()
+
+});
+
+
+}
+
+
+
+next();
+
+
+
+};
+
+
+
+
+
 
 export const authorValidation = [
 
-    body("firstName")
-    .notEmpty()
-    .withMessage("First name is required"),
 
 
-    body("lastName")
-    .notEmpty()
-    .withMessage("Last name is required"),
+body("name")
+
+.notEmpty()
+
+.withMessage(
+"Author name required"
+),
 
 
-    body("birthYear")
-    .isNumeric()
-    .withMessage("Birth year must be a number"),
+
+body("email")
+
+.isEmail()
+
+.withMessage(
+"Valid email required"
+),
 
 
-    body("country")
-    .notEmpty()
-    .withMessage("Country is required"),
 
 
-    body("email")
-    .isEmail()
-    .withMessage("Valid email required")
+body("nationality")
+
+.notEmpty()
+
+.withMessage(
+"Nationality required"
+),
+
+
+
+
+body("birthYear")
+
+.isNumeric()
+
+.withMessage(
+"Birth year must be numeric"
+),
+
+
+
+
+body("biography")
+
+.notEmpty()
+
+.withMessage(
+"Biography required"
+)
 
 
 ];

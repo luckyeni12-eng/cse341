@@ -1,69 +1,136 @@
 import express from "express";
 
+
 import {
-    getBooks,
-    getBook,
-    createBook,
-    updateBook,
-    deleteBook
+
+getBooks,
+
+getBook,
+
+createBook,
+
+updateBook,
+
+deleteBook
+
+
 } from "../controllers/booksController.js";
 
-import { authenticate } from "../middleware/authenticate.js";
 
 import {
-    bookValidation,
-    validateRequest
+
+authenticate
+
+} from "../middleware/authenticate.js";
+
+
+
+import {
+
+bookValidation,
+
+validateRequest
+
 } from "../middleware/validation.js";
+
 
 
 const router = express.Router();
 
 
+
+
+
 // GET ALL BOOKS
-// Public route
+
 router.get(
-    "/",
-    getBooks
+
+"/",
+
+getBooks
+
 );
 
 
-// GET SINGLE BOOK
-// Public route
+
+
+
+
+// GET ONE BOOK
+
+
 router.get(
-    "/:id",
-    getBook
+
+"/:id",
+
+getBook
+
 );
+
+
+
+
 
 
 // CREATE BOOK
-// Protected + Validation
+
+
 router.post(
-    "/",
-    authenticate,
-    bookValidation,
-    validateRequest,
-    createBook
+
+"/",
+
+authenticate,
+
+bookValidation,
+
+validateRequest,
+
+createBook
+
 );
+
+
+
+
 
 
 // UPDATE BOOK
-// Protected + Validation
+
+
 router.put(
-    "/:id",
-    authenticate,
-    bookValidation,
-    validateRequest,
-    updateBook
+
+"/:id",
+
+authenticate,
+
+bookValidation,
+
+validateRequest,
+
+updateBook
+
 );
+
+
+
+
 
 
 // DELETE BOOK
-// Protected
+
+
 router.delete(
-    "/:id",
-    authenticate,
-    deleteBook
+
+"/:id",
+
+authenticate,
+
+deleteBook
+
 );
+
+
+
 
 
 export default router;

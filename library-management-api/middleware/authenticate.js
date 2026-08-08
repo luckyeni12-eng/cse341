@@ -1,88 +1,85 @@
 import jwt from "jsonwebtoken";
 
 
-export function authenticate(req, res, next) {
+
+export function authenticate(req,res,next){
 
 
-    const authHeader = req.headers.authorization;
-
-
-    console.log(
-        "Authorization Header:",
-        authHeader
-    );
-
-
-    if (!authHeader) {
-
-        return res.status(401).json({
-
-            message: "Access denied. No token provided"
-
-        });
-
-    }
+const authHeader =
+req.headers.authorization;
 
 
 
-    const token = authHeader.split(" ")[1];
+if(!authHeader){
 
 
-    console.log(
-        "Extracted Token:",
-        token
-    );
+return res.status(401).json({
+
+message:"Access denied. No token provided"
+
+});
 
 
-
-    try {
-
-
-        // Check JWT secret before verification
-        console.log(
-            "Verify secret:",
-            process.env.JWT_SECRET
-        );
-
-
-        const decoded = jwt.verify(
-
-            token,
-
-            process.env.JWT_SECRET
-
-        );
-
-
-        req.user = decoded;
-
-
-        console.log(
-            "Authenticated User:",
-            req.user
-        );
-
-
-        next();
+}
 
 
 
-    } catch (error) {
+const token =
+authHeader.split(" ")[1];
 
 
-        console.log(
-            "JWT Error:",
-            error.message
-        );
+
+if(!token){
 
 
-        return res.status(401).json({
+return res.status(401).json({
 
-            message: "Invalid token"
+message:"Invalid authorization format"
 
-        });
+});
 
-    }
+
+}
+
+
+
+try{
+
+
+const decoded =
+jwt.verify(
+
+token,
+
+process.env.JWT_SECRET
+
+);
+
+
+
+req.user = decoded;
+
+
+
+next();
+
+
+
+}
+
+catch(error){
+
+
+
+return res.status(401).json({
+
+message:"Invalid or expired token"
+
+});
+
+
+}
+
 
 
 }
