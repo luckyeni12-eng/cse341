@@ -1,45 +1,36 @@
 import mongoose from "mongoose";
 
-
-const authorSchema = new mongoose.Schema({
-
-    name:{
-        type:String,
-        required:true
+const authorSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true
     },
 
-
-    email:{
-        type:String,
-        required:true,
-        unique:true
+    lastName: {
+      type: String,
+      required: true
     },
 
-
-    nationality:{
-        type:String,
-        required:true
+    birthYear: {
+      type: Number,
+      required: true
     },
 
-
-    birthYear:{
-        type:Number,
-        required:true
+    country: {
+      type: String,
+      required: true
     },
 
-
-    biography:{
-        type:String,
-        required:true
+    email: {
+      type: String,
+      required: true,
+      unique: true
     }
-
-},
-{
-    timestamps:true
-});
-
-
-export default mongoose.model(
-    "Author",
-    authorSchema
+  },
+  {
+    timestamps: true
+  }
 );
+
+export default mongoose.model("Author", authorSchema);
