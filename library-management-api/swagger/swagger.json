@@ -1,12 +1,10 @@
 {
   "openapi": "3.0.0",
-
   "info": {
     "title": "Library Management API",
     "description": "API for managing books and authors with CRUD operations and authentication",
     "version": "2.0.0"
   },
-
   "servers": [
     {
       "url": "http://localhost:3000",
@@ -17,7 +15,6 @@
       "description": "Production server"
     }
   ],
-
   "tags": [
     {
       "name": "Books",
@@ -32,7 +29,6 @@
       "description": "User authentication endpoints"
     }
   ],
-
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -41,7 +37,6 @@
         "bearerFormat": "JWT"
       }
     },
-
     "schemas": {
       "User": {
         "type": "object",
@@ -67,22 +62,12 @@
           }
         }
       },
-
       "Book": {
         "type": "object",
-        "required": [
-          "title",
-          "isbn",
-          "author",
-          "category",
-          "publisher",
-          "publicationYear",
-          "pages",
-          "available"
-        ],
         "properties": {
           "_id": {
             "type": "string",
+            "readOnly": true,
             "example": "64f123456789abcdef123456"
           },
           "title": {
@@ -123,8 +108,89 @@
           }
         }
       },
-
+      "BookInput": {
+        "type": "object",
+        "required": [
+          "title",
+          "isbn",
+          "author",
+          "category",
+          "publisher",
+          "publicationYear",
+          "pages",
+          "language"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Pride and Prejudice"
+          },
+          "isbn": {
+            "type": "string",
+            "example": "9780141439518"
+          },
+          "author": {
+            "type": "string",
+            "example": "Jane Austen"
+          },
+          "category": {
+            "type": "string",
+            "example": "Classic Fiction"
+          },
+          "publisher": {
+            "type": "string",
+            "example": "Penguin Classics"
+          },
+          "publicationYear": {
+            "type": "integer",
+            "example": 1813
+          },
+          "pages": {
+            "type": "integer",
+            "example": 432
+          },
+          "language": {
+            "type": "string",
+            "example": "English"
+          },
+          "available": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
       "Author": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "readOnly": true,
+            "example": "64f123456789abcdef123456"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "J.R.R."
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Tolkien"
+          },
+          "birthYear": {
+            "type": "integer",
+            "example": 1892
+          },
+          "country": {
+            "type": "string",
+            "example": "United Kingdom"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "tolkien@example.com"
+          }
+        }
+      },
+      "AuthorInput": {
         "type": "object",
         "required": [
           "firstName",
@@ -134,10 +200,6 @@
           "email"
         ],
         "properties": {
-          "_id": {
-            "type": "string",
-            "example": "64f123456789abcdef123456"
-          },
           "firstName": {
             "type": "string",
             "example": "J.R.R."
@@ -163,7 +225,6 @@
       }
     }
   },
-
   "paths": {
     "/auth/register": {
       "post": {
@@ -191,7 +252,6 @@
         }
       }
     },
-
     "/auth/login": {
       "post": {
         "summary": "Login user",
@@ -234,7 +294,6 @@
         }
       }
     },
-
     "/auth/logout": {
       "post": {
         "summary": "Logout user",
@@ -256,7 +315,6 @@
         }
       }
     },
-
     "/books": {
       "get": {
         "summary": "Get all books",
@@ -279,7 +337,6 @@
           }
         }
       },
-
       "post": {
         "summary": "Create a new book",
         "tags": [
@@ -295,14 +352,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Book"
+                "$ref": "#/components/schemas/BookInput"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Book created successfully"
+            "description": "Book created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
           },
           "400": {
             "description": "Validation error"
@@ -313,7 +377,6 @@
         }
       }
     },
-
     "/books/{id}": {
       "get": {
         "summary": "Get a single book",
@@ -325,6 +388,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
             },
@@ -347,7 +411,6 @@
           }
         }
       },
-
       "put": {
         "summary": "Update a book",
         "tags": [
@@ -363,6 +426,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
             },
@@ -374,14 +438,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Book"
+                "$ref": "#/components/schemas/BookInput"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Book updated successfully"
+            "description": "Book updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
           },
           "401": {
             "description": "Unauthorized"
@@ -391,7 +465,6 @@
           }
         }
       },
-
       "delete": {
         "summary": "Delete a book",
         "tags": [
@@ -407,6 +480,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
             },
@@ -426,7 +500,6 @@
         }
       }
     },
-
     "/authors": {
       "get": {
         "summary": "Get all authors",
@@ -449,7 +522,6 @@
           }
         }
       },
-
       "post": {
         "summary": "Create a new author",
         "tags": [
@@ -465,14 +537,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Author"
+                "$ref": "#/components/schemas/AuthorInput"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Author created successfully"
+            "description": "Author created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
           },
           "401": {
             "description": "Unauthorized"
@@ -480,7 +562,6 @@
         }
       }
     },
-
     "/authors/{id}": {
       "get": {
         "summary": "Get a single author",
@@ -492,6 +573,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
             },
@@ -514,7 +596,6 @@
           }
         }
       },
-
       "put": {
         "summary": "Update an author",
         "tags": [
@@ -530,6 +611,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
             },
@@ -541,14 +623,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Author"
+                "$ref": "#/components/schemas/AuthorInput"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Author updated successfully"
+            "description": "Author updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error"
           },
           "401": {
             "description": "Unauthorized"
@@ -558,7 +650,6 @@
           }
         }
       },
-
       "delete": {
         "summary": "Delete an author",
         "tags": [
@@ -574,6 +665,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
             },
