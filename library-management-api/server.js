@@ -20,7 +20,6 @@ dotenv.config();
 
 const app = express();
 
-
 // ==========================================
 // GENERAL MIDDLEWARE
 // ==========================================
@@ -29,13 +28,11 @@ app.use(cors());
 
 app.use(express.json());
 
-
 // ==========================================
 // PASSPORT
 // ==========================================
 
 app.use(passport.initialize());
-
 
 // ==========================================
 // GOOGLE OAUTH
@@ -45,26 +42,17 @@ passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
-
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-
       callbackURL: process.env.GOOGLE_CALLBACK_URL
     },
 
-    async (
-      accessToken,
-      refreshToken,
-      profile,
-      done
-    ) => {
+    async (accessToken, refreshToken, profile, done) => {
       try {
-
         const email =
           profile.emails &&
           profile.emails.length > 0
             ? profile.emails[0].value
             : null;
-
 
         if (!email) {
           return done(
@@ -75,51 +63,37 @@ passport.use(
           );
         }
 
-
-        // Find an existing Google user
-
+        // Find existing Google user
         let user = await User.findOne({
           googleId: profile.id
         });
 
-
-        // If not found, try email
-
+        // If Google user is not found, try email
         if (!user) {
           user = await User.findOne({
             email: email
           });
         }
 
-
-        // Create user if necessary
-
+        // Create new user if necessary
         if (!user) {
-
           user = await User.create({
             googleId: profile.id,
             email: email,
             name: profile.displayName
           });
-
         } else if (!user.googleId) {
-
           user.googleId = profile.id;
-
           await user.save();
         }
 
-
         return done(null, user);
-
       } catch (error) {
-
         return done(error, null);
       }
     }
   )
 );
-
 
 // ==========================================
 // DATABASE
@@ -127,56 +101,37 @@ passport.use(
 
 mongoose
   .connect(process.env.MONGODB_URI)
-
   .then(() => {
-
     console.log("Connected to MongoDB");
-
   })
-
   .catch((error) => {
-
-    console.log(
-      "Database Error:",
-      error.message
-    );
-
+    console.error("Database Error:", error.message);
   });
 
+// ==========================================
+// ROOT ROUTE
+// ==========================================
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    message: "Library Management API is running",
+    documentation: "/api-docs"
+  });
+});
 
 // ==========================================
-// ROUTES
+// API ROUTES
 // ==========================================
 
-app.use(
-  "/books",
-  booksRoutes
-);
+app.use("/books", booksRoutes);
 
+app.use("/authors", authorsRoutes);
 
-app.use(
-  "/authors",
-  authorsRoutes
-);
+app.use("/members", membersRoutes);
 
+app.use("/loans", loansRoutes);
 
-app.use(
-  "/members",
-  membersRoutes
-);
-
-
-app.use(
-  "/loans",
-  loansRoutes
-);
-
-
-app.use(
-  "/auth",
-  authRoutes
-);
-
+app.use("/auth", authRoutes);
 
 // ==========================================
 // SWAGGER API DOCUMENTATION
@@ -188,44 +143,26 @@ app.use(
   swaggerUi.setup(swaggerDocument)
 );
 
-
 // ==========================================
 // ERROR HANDLER
 // ==========================================
 
-app.use(
-  (error, req, res, next) => {
+app.use((error, req, res, next) => {
+  console.error(error);
 
-    console.error(error);
-
-    res.status(500).json({
-
-      message:
-        error.message ||
-        "Internal server error"
-
-    });
-
-  }
-);
-
+  res.status(500).json({
+    message: error.message || "Internal server error"
+  });
+});
 
 // ==========================================
 // SERVER
 // ==========================================
 
-const PORT =
-  process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-app.listen(
-  PORT,
-  () => {
-    console.log(
-      `Server running at http://localhost:${PORT}`
-    );
-
-    console.log(
-      `Swagger UI: http://localhost:${PORT}/api-docs`
-    );
-  }
-);
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+});
+```
