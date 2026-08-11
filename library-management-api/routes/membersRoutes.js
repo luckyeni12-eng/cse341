@@ -1,74 +1,74 @@
 import express from "express";
 
 import {
-  getBooks,
-  getBook,
-  createBook,
-  updateBook,
-  deleteBook
-} from "../controllers/booksController.js";
+  getMembers,
+  getMember,
+  createMember,
+  updateMember,
+  deleteMember
+} from "../controllers/membersController.js";
 
 import {
   authenticate
 } from "../middleware/authenticate.js";
 
 import {
-  bookValidation,
+  memberValidation,
   validateRequest
 } from "../middleware/validation.js";
 
 const router = express.Router();
 
 
-// GET ALL BOOKS
+// GET ALL MEMBERS
 // Public route
 
 router.get(
   "/",
-  getBooks
+  getMembers
 );
 
 
-// GET ONE BOOK
+// GET SINGLE MEMBER
 // Public route
 
 router.get(
   "/:id",
-  getBook
+  getMember
 );
 
 
-// CREATE BOOK
+// CREATE MEMBER
 // Protected + validated
 
 router.post(
   "/",
   authenticate,
-  bookValidation,
+  memberValidation,
   validateRequest,
-  createBook
+  createMember
 );
 
 
-// UPDATE BOOK
+// UPDATE MEMBER
 // Protected + validated
 
 router.put(
   "/:id",
   authenticate,
-  bookValidation,
+  memberValidation,
   validateRequest,
-  updateBook
+  updateMember
 );
 
 
-// DELETE BOOK
+// DELETE MEMBER
 // Protected
 
 router.delete(
   "/:id",
   authenticate,
-  deleteBook
+  deleteMember
 );
 
 

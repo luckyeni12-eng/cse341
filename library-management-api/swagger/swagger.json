@@ -2,31 +2,17 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Library Management API",
-    "description": "API for managing books and authors with CRUD operations and authentication",
-    "version": "2.0.0"
+    "version": "3.0.0",
+    "description": "Library Management API with MongoDB CRUD operations, data validation, JWT authorization, Google OAuth authentication, and automated testing."
   },
   "servers": [
     {
       "url": "http://localhost:3000",
-      "description": "Local server"
+      "description": "Local Development Server"
     },
     {
-      "url": "https://your-render-app.onrender.com",
-      "description": "Production server"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Books",
-      "description": "Book management endpoints"
-    },
-    {
-      "name": "Authors",
-      "description": "Author management endpoints"
-    },
-    {
-      "name": "Authentication",
-      "description": "User authentication endpoints"
+      "url": "https://cse341-d605.onrender.com",
+      "description": "Production Server"
     }
   ],
   "components": {
@@ -41,7 +27,6 @@
       "User": {
         "type": "object",
         "required": [
-          "username",
           "email",
           "password"
         ],
@@ -64,52 +49,6 @@
       },
       "Book": {
         "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "readOnly": true,
-            "example": "64f123456789abcdef123456"
-          },
-          "title": {
-            "type": "string",
-            "example": "Animal Farm"
-          },
-          "isbn": {
-            "type": "string",
-            "example": "9780451526342"
-          },
-          "author": {
-            "type": "string",
-            "example": "George Orwell"
-          },
-          "category": {
-            "type": "string",
-            "example": "Political Satire"
-          },
-          "publisher": {
-            "type": "string",
-            "example": "Secker & Warburg"
-          },
-          "publicationYear": {
-            "type": "integer",
-            "example": 1945
-          },
-          "pages": {
-            "type": "integer",
-            "example": 112
-          },
-          "language": {
-            "type": "string",
-            "example": "English"
-          },
-          "available": {
-            "type": "boolean",
-            "example": true
-          }
-        }
-      },
-      "BookInput": {
-        "type": "object",
         "required": [
           "title",
           "isbn",
@@ -118,36 +57,37 @@
           "publisher",
           "publicationYear",
           "pages",
-          "language"
+          "language",
+          "available"
         ],
         "properties": {
           "title": {
             "type": "string",
-            "example": "Pride and Prejudice"
+            "example": "The Hobbit"
           },
           "isbn": {
             "type": "string",
-            "example": "9780141439518"
+            "example": "9780261103344"
           },
           "author": {
             "type": "string",
-            "example": "Jane Austen"
+            "example": "J.R.R. Tolkien"
           },
           "category": {
             "type": "string",
-            "example": "Classic Fiction"
+            "example": "Fantasy"
           },
           "publisher": {
             "type": "string",
-            "example": "Penguin Classics"
+            "example": "HarperCollins"
           },
           "publicationYear": {
             "type": "integer",
-            "example": 1813
+            "example": 1937
           },
           "pages": {
             "type": "integer",
-            "example": 432
+            "example": 310
           },
           "language": {
             "type": "string",
@@ -160,37 +100,6 @@
         }
       },
       "Author": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "readOnly": true,
-            "example": "64f123456789abcdef123456"
-          },
-          "firstName": {
-            "type": "string",
-            "example": "J.R.R."
-          },
-          "lastName": {
-            "type": "string",
-            "example": "Tolkien"
-          },
-          "birthYear": {
-            "type": "integer",
-            "example": 1892
-          },
-          "country": {
-            "type": "string",
-            "example": "United Kingdom"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "example": "tolkien@example.com"
-          }
-        }
-      },
-      "AuthorInput": {
         "type": "object",
         "required": [
           "firstName",
@@ -222,6 +131,106 @@
             "example": "tolkien@example.com"
           }
         }
+      },
+      "Member": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "phone",
+          "membershipType",
+          "joinDate",
+          "address",
+          "active"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Smith"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "example": "555-123-4567"
+          },
+          "membershipType": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "premium",
+              "student"
+            ],
+            "example": "standard"
+          },
+          "joinDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-08-08"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main Street"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "Loan": {
+        "type": "object",
+        "required": [
+          "member",
+          "book",
+          "loanDate",
+          "dueDate",
+          "status",
+          "fine"
+        ],
+        "properties": {
+          "member": {
+            "type": "string",
+            "example": "66a123456789abcdef123456"
+          },
+          "book": {
+            "type": "string",
+            "example": "66a123456789abcdef654321"
+          },
+          "loanDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-08-08"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-08-22"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": null
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "borrowed",
+              "returned",
+              "overdue"
+            ],
+            "example": "borrowed"
+          },
+          "fine": {
+            "type": "number",
+            "minimum": 0,
+            "example": 0
+          }
+        }
       }
     }
   },
@@ -247,7 +256,10 @@
             "description": "User registered successfully"
           },
           "400": {
-            "description": "User already exists or validation error"
+            "description": "User already exists or validation failed"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -286,10 +298,16 @@
         },
         "responses": {
           "200": {
-            "description": "Login successful"
+            "description": "Login successful and JWT token returned"
           },
           "401": {
             "description": "Invalid credentials"
+          },
+          "404": {
+            "description": "User not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -310,7 +328,46 @@
             "description": "Logout successful"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/auth/google": {
+      "get": {
+        "summary": "Login using Google OAuth",
+        "description": "Redirects the user to Google for OAuth authentication.",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to Google OAuth"
+          },
+          "500": {
+            "description": "OAuth configuration error"
+          }
+        }
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "summary": "Google OAuth callback",
+        "tags": [
+          "Authentication"
+        ],
+        "responses": {
+          "200": {
+            "description": "Google OAuth authentication successful and JWT token returned"
+          },
+          "401": {
+            "description": "OAuth authentication failed"
+          },
+          "500": {
+            "description": "OAuth server error"
           }
         }
       }
@@ -323,17 +380,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Books returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
-                  }
-                }
-              }
-            }
+            "description": "Books returned successfully"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
@@ -352,27 +402,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookInput"
+                "$ref": "#/components/schemas/Book"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Book created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Book"
-                }
-              }
-            }
+            "description": "Book created successfully"
           },
           "400": {
             "description": "Validation error"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -388,26 +434,23 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
-            },
-            "example": "64f123456789abcdef123456"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Book returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Book"
-                }
-              }
-            }
+            "description": "Book returned successfully"
+          },
+          "400": {
+            "description": "Invalid book ID"
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
@@ -426,11 +469,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
-            },
-            "example": "64f123456789abcdef123456"
+            }
           }
         ],
         "requestBody": {
@@ -438,30 +479,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookInput"
+                "$ref": "#/components/schemas/Book"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Book updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Book"
-                }
-              }
-            }
+            "description": "Book updated successfully"
           },
           "400": {
-            "description": "Validation error"
+            "description": "Validation error or invalid book ID"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
@@ -480,22 +517,26 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
-            },
-            "example": "64f123456789abcdef123456"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Book deleted successfully"
           },
+          "400": {
+            "description": "Invalid book ID"
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
           },
           "404": {
             "description": "Book not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -508,17 +549,10 @@
         ],
         "responses": {
           "200": {
-            "description": "Authors returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Author"
-                  }
-                }
-              }
-            }
+            "description": "Authors returned successfully"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
@@ -537,27 +571,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthorInput"
+                "$ref": "#/components/schemas/Author"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Author created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Author"
-                }
-              }
-            }
+            "description": "Author created successfully"
           },
           "400": {
             "description": "Validation error"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }
@@ -573,26 +603,23 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
-            },
-            "example": "64f123456789abcdef123456"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Author returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Author"
-                }
-              }
-            }
+            "description": "Author returned successfully"
+          },
+          "400": {
+            "description": "Invalid author ID"
           },
           "404": {
             "description": "Author not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
@@ -611,11 +638,9 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
-            },
-            "example": "64f123456789abcdef123456"
+            }
           }
         ],
         "requestBody": {
@@ -623,30 +648,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AuthorInput"
+                "$ref": "#/components/schemas/Author"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Author updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Author"
-                }
-              }
-            }
+            "description": "Author updated successfully"
           },
           "400": {
-            "description": "Validation error"
+            "description": "Validation error or invalid author ID"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
           },
           "404": {
             "description": "Author not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       },
@@ -665,22 +686,364 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
-            },
-            "example": "64f123456789abcdef123456"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Author deleted successfully"
           },
+          "400": {
+            "description": "Invalid author ID"
+          },
           "401": {
-            "description": "Unauthorized"
+            "description": "Authentication required"
           },
           "404": {
             "description": "Author not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "summary": "Get all members",
+        "tags": [
+          "Members"
+        ],
+        "responses": {
+          "200": {
+            "description": "Members returned successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new member",
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Member created successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/members/{id}": {
+      "get": {
+        "summary": "Get a single member",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member returned successfully"
+          },
+          "400": {
+            "description": "Invalid member ID"
+          },
+          "404": {
+            "description": "Member not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a member",
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Member"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member updated successfully"
+          },
+          "400": {
+            "description": "Validation error or invalid member ID"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Member not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a member",
+        "tags": [
+          "Members"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member deleted successfully"
+          },
+          "400": {
+            "description": "Invalid member ID"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Member not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/loans": {
+      "get": {
+        "summary": "Get all loans",
+        "tags": [
+          "Loans"
+        ],
+        "responses": {
+          "200": {
+            "description": "Loans returned successfully"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new loan",
+        "tags": [
+          "Loans"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Loan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Loan created successfully"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/loans/{id}": {
+      "get": {
+        "summary": "Get a single loan",
+        "tags": [
+          "Loans"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Loan returned successfully"
+          },
+          "400": {
+            "description": "Invalid loan ID"
+          },
+          "404": {
+            "description": "Loan not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a loan",
+        "tags": [
+          "Loans"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Loan"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Loan updated successfully"
+          },
+          "400": {
+            "description": "Validation error or invalid loan ID"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Loan not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a loan",
+        "tags": [
+          "Loans"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Loan deleted successfully"
+          },
+          "400": {
+            "description": "Invalid loan ID"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "404": {
+            "description": "Loan not found"
+          },
+          "500": {
+            "description": "Server error"
           }
         }
       }

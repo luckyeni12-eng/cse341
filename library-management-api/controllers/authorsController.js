@@ -1,114 +1,126 @@
 import Author from "../models/Author.js";
 
+// ==========================================
 // GET ALL AUTHORS
+// GET /authors
+// Public route
+// ==========================================
+
 export async function getAuthors(req, res) {
-  try {
-    const authors = await Author.find();
+    try {
+        const authors = await Author.find();
 
-    res.status(200).json(authors);
-  } catch (error) {
-    res.status(500).json({
-      message: "Error retrieving authors",
-      error: error.message
-    });
-  }
+        return res.status(200).json(authors);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error retrieving authors",
+            error: error.message
+        });
+    }
 }
 
-// GET ONE AUTHOR
+// ==========================================
+// GET SINGLE AUTHOR
+// GET /authors/:id
+// Public route
+// ==========================================
+
 export async function getAuthor(req, res) {
-  try {
-    const author = await Author.findById(req.params.id);
+    try {
+        const author = await Author.findById(req.params.id);
 
-    if (!author) {
-      return res.status(404).json({
-        message: "Author not found"
-      });
+        if (!author) {
+            return res.status(404).json({
+                message: "Author not found"
+            });
+        }
+
+        return res.status(200).json(author);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error retrieving author",
+            error: error.message
+        });
     }
-
-    res.status(200).json(author);
-  } catch (error) {
-    res.status(500).json({
-      message: "Error retrieving author",
-      error: error.message
-    });
-  }
 }
 
+// ==========================================
 // CREATE AUTHOR
+// POST /authors
+// Protected + validated
+// ==========================================
+
 export async function createAuthor(req, res) {
-  try {
-    const author = new Author({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      birthYear: req.body.birthYear,
-      country: req.body.country,
-      email: req.body.email
-    });
+    try {
+        const author = new Author(req.body);
 
-    const savedAuthor = await author.save();
+        const savedAuthor = await author.save();
 
-    res.status(201).json(savedAuthor);
-  } catch (error) {
-    res.status(400).json({
-      message: "Unable to create author",
-      error: error.message
-    });
-  }
+        return res.status(201).json(savedAuthor);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error creating author",
+            error: error.message
+        });
+    }
 }
 
+// ==========================================
 // UPDATE AUTHOR
+// PUT /authors/:id
+// Protected + validated
+// ==========================================
+
 export async function updateAuthor(req, res) {
-  try {
-    const updatedAuthor = await Author.findByIdAndUpdate(
-      req.params.id,
-      {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        birthYear: req.body.birthYear,
-        country: req.body.country,
-        email: req.body.email
-      },
-      {
-        new: true,
-        runValidators: true
-      }
-    );
+    try {
+        const updatedAuthor = await Author.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {
+                new: true,
+                runValidators: true
+            }
+        );
 
-    if (!updatedAuthor) {
-      return res.status(404).json({
-        message: "Author not found"
-      });
+        if (!updatedAuthor) {
+            return res.status(404).json({
+                message: "Author not found"
+            });
+        }
+
+        return res.status(200).json(updatedAuthor);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error updating author",
+            error: error.message
+        });
     }
-
-    res.status(200).json(updatedAuthor);
-  } catch (error) {
-    res.status(400).json({
-      message: "Unable to update author",
-      error: error.message
-    });
-  }
 }
 
+// ==========================================
 // DELETE AUTHOR
+// DELETE /authors/:id
+// Protected
+// ==========================================
+
 export async function deleteAuthor(req, res) {
-  try {
-    const deletedAuthor = await Author.findByIdAndDelete(
-      req.params.id
-    );
+    try {
+        const deletedAuthor = await Author.findByIdAndDelete(
+            req.params.id
+        );
 
-    if (!deletedAuthor) {
-      return res.status(404).json({
-        message: "Author not found"
-      });
+        if (!deletedAuthor) {
+            return res.status(404).json({
+                message: "Author not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Author deleted successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Author deleted successfully"
+        });
     }
-
-    res.status(200).json({
-      message: "Author deleted successfully"
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Unable to delete author",
-      error: error.message
-    });
-  }
 }

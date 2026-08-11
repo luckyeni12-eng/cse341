@@ -1,62 +1,71 @@
 import express from "express";
-
+import passport from "passport";
 
 import {
+    register,
+    login,
+    logout,
+    googleCallback
+} from "../controllers/authController.js";
 
-register,
+const router = express.Router();
 
-login,
+// ==========================================
+// REGISTER
+// POST /auth/register
+// ==========================================
 
-logout
+router.post("/register", register);
 
-}
+// ==========================================
+// LOGIN
+// POST /auth/login
+// ==========================================
 
-from "../controllers/authController.js";
+router.post("/login", login);
 
+// ==========================================
+// LOGOUT
+// POST /auth/logout
+// ==========================================
 
+router.post("/logout", logout);
 
-const router =
-express.Router();
+// ==========================================
+// GOOGLE OAUTH
+// GET /auth/google
+// ==========================================
 
-
-
-
-
-router.post(
-
-"/register",
-
-register
-
+router.get(
+    "/google",
+    passport.authenticate("google", {
+        scope: ["profile", "email"]
+    })
 );
 
+// ==========================================
+// GOOGLE OAUTH CALLBACK
+// GET /auth/google/callback
+// ==========================================
 
-
-
-
-router.post(
-
-"/login",
-
-login
-
+router.get(
+    "/google/callback",
+    passport.authenticate("google", {
+        session: false,
+        failureRedirect: "/auth/login-failed"
+    }),
+    googleCallback
 );
 
+// ==========================================
+// GOOGLE LOGIN FAILURE
+// GET /auth/login-failed
+// ==========================================
 
-
-
-
-router.post(
-
-"/logout",
-
-logout
-
-);
-
-
-
-
-
+router.get("/login-failed", (req, res) => {
+    res.status(401).json({
+        message: "Google OAuth login failed"
+    });
+});
 
 export default router;

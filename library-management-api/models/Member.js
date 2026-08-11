@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const authorSchema = new mongoose.Schema(
+const memberSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -16,21 +16,32 @@ const authorSchema = new mongoose.Schema(
       lowercase: true
     },
 
-    nationality: {
+    phone: {
       type: String,
       required: true,
       trim: true
     },
 
-    birthYear: {
-      type: Number,
+    membershipType: {
+      type: String,
+      required: true,
+      enum: ["standard", "premium", "student"]
+    },
+
+    joinDate: {
+      type: Date,
       required: true
     },
 
-    biography: {
+    address: {
       type: String,
+      required: true
+    },
+
+    active: {
+      type: Boolean,
       required: true,
-      trim: true
+      default: true
     }
   },
   {
@@ -38,4 +49,4 @@ const authorSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Author", authorSchema);
+export default mongoose.model("Member", memberSchema);
