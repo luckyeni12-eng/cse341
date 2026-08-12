@@ -48,8 +48,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const email =
-          profile.emails &&
-          profile.emails.length > 0
+          profile.emails && profile.emails.length > 0
             ? profile.emails[0].value
             : null;
 
@@ -67,14 +66,14 @@ passport.use(
           googleId: profile.id
         });
 
-        // If Google user is not found, try email
+        // If Google user is not found, try finding the user by email
         if (!user) {
           user = await User.findOne({
             email: email
           });
         }
 
-        // Create new user if necessary
+        // Create a new user if necessary
         if (!user) {
           user = await User.create({
             googleId: profile.id,
@@ -82,6 +81,7 @@ passport.use(
             name: profile.displayName
           });
         } else if (!user.googleId) {
+          // Link Google account to existing user
           user.googleId = profile.id;
           await user.save();
         }
@@ -164,4 +164,3 @@ app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
   console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
 });
-```
