@@ -47,6 +47,7 @@
           }
         }
       },
+
       "Book": {
         "type": "object",
         "required": [
@@ -99,39 +100,41 @@
           }
         }
       },
+
       "Author": {
         "type": "object",
         "required": [
-          "firstName",
-          "lastName",
+          "name",
+          "email",
+          "nationality",
           "birthYear",
-          "country",
-          "email"
+          "biography"
         ],
         "properties": {
-          "firstName": {
+          "name": {
             "type": "string",
-            "example": "J.R.R."
-          },
-          "lastName": {
-            "type": "string",
-            "example": "Tolkien"
-          },
-          "birthYear": {
-            "type": "integer",
-            "example": 1892
-          },
-          "country": {
-            "type": "string",
-            "example": "United Kingdom"
+            "example": "J.R.R. Tolkien"
           },
           "email": {
             "type": "string",
             "format": "email",
             "example": "tolkien@example.com"
+          },
+          "nationality": {
+            "type": "string",
+            "example": "British"
+          },
+          "birthYear": {
+            "type": "integer",
+            "example": 1892
+          },
+          "biography": {
+            "type": "string",
+            "example": "English writer and author of The Hobbit and The Lord of the Rings."
           }
         }
       },
+
       "Member": {
         "type": "object",
         "required": [
@@ -181,6 +184,7 @@
           }
         }
       },
+
       "Loan": {
         "type": "object",
         "required": [
@@ -234,6 +238,7 @@
       }
     }
   },
+
   "paths": {
     "/auth/register": {
       "post": {
@@ -264,6 +269,7 @@
         }
       }
     },
+
     "/auth/login": {
       "post": {
         "summary": "Login user",
@@ -312,6 +318,7 @@
         }
       }
     },
+
     "/auth/logout": {
       "post": {
         "summary": "Logout user",
@@ -336,6 +343,7 @@
         }
       }
     },
+
     "/auth/google": {
       "get": {
         "summary": "Login using Google OAuth",
@@ -353,6 +361,7 @@
         }
       }
     },
+
     "/auth/google/callback": {
       "get": {
         "summary": "Google OAuth callback",
@@ -372,6 +381,7 @@
         }
       }
     },
+
     "/books": {
       "get": {
         "summary": "Get all books",
@@ -387,6 +397,7 @@
           }
         }
       },
+
       "post": {
         "summary": "Create a new book",
         "tags": [
@@ -423,6 +434,7 @@
         }
       }
     },
+
     "/books/{id}": {
       "get": {
         "summary": "Get a single book",
@@ -454,6 +466,7 @@
           }
         }
       },
+
       "put": {
         "summary": "Update a book",
         "tags": [
@@ -502,6 +515,7 @@
           }
         }
       },
+
       "delete": {
         "summary": "Delete a book",
         "tags": [
@@ -541,6 +555,7 @@
         }
       }
     },
+
     "/authors": {
       "get": {
         "summary": "Get all authors",
@@ -556,6 +571,7 @@
           }
         }
       },
+
       "post": {
         "summary": "Create a new author",
         "tags": [
@@ -592,6 +608,7 @@
         }
       }
     },
+
     "/authors/{id}": {
       "get": {
         "summary": "Get a single author",
@@ -623,6 +640,7 @@
           }
         }
       },
+
       "put": {
         "summary": "Update an author",
         "tags": [
@@ -671,6 +689,7 @@
           }
         }
       },
+
       "delete": {
         "summary": "Delete an author",
         "tags": [
@@ -710,6 +729,7 @@
         }
       }
     },
+
     "/members": {
       "get": {
         "summary": "Get all members",
@@ -725,6 +745,7 @@
           }
         }
       },
+
       "post": {
         "summary": "Create a new member",
         "tags": [
@@ -761,6 +782,7 @@
         }
       }
     },
+
     "/members/{id}": {
       "get": {
         "summary": "Get a single member",
@@ -792,6 +814,7 @@
           }
         }
       },
+
       "put": {
         "summary": "Update a member",
         "tags": [
@@ -840,6 +863,7 @@
           }
         }
       },
+
       "delete": {
         "summary": "Delete a member",
         "tags": [
@@ -879,6 +903,7 @@
         }
       }
     },
+
     "/loans": {
       "get": {
         "summary": "Get all loans",
@@ -894,6 +919,7 @@
           }
         }
       },
+
       "post": {
         "summary": "Create a new loan",
         "tags": [
@@ -930,6 +956,7 @@
         }
       }
     },
+
     "/loans/{id}": {
       "get": {
         "summary": "Get a single loan",
@@ -961,6 +988,7 @@
           }
         }
       },
+
       "put": {
         "summary": "Update a loan",
         "tags": [
@@ -1009,6 +1037,7 @@
           }
         }
       },
+
       "delete": {
         "summary": "Delete a loan",
         "tags": [

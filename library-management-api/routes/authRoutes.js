@@ -8,6 +8,8 @@ import {
     googleCallback
 } from "../controllers/authController.js";
 
+import { authenticate } from "../middleware/authenticate.js";
+
 const router = express.Router();
 
 // ==========================================
@@ -27,9 +29,14 @@ router.post("/login", login);
 // ==========================================
 // LOGOUT
 // POST /auth/logout
+// Protected
 // ==========================================
 
-router.post("/logout", logout);
+router.post(
+    "/logout",
+    authenticate,
+    logout
+);
 
 // ==========================================
 // GOOGLE OAUTH
@@ -63,7 +70,7 @@ router.get(
 // ==========================================
 
 router.get("/login-failed", (req, res) => {
-    res.status(401).json({
+    return res.status(401).json({
         message: "Google OAuth login failed"
     });
 });

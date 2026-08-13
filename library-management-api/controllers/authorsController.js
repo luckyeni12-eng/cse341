@@ -58,7 +58,7 @@ export async function createAuthor(req, res) {
 
         return res.status(201).json(savedAuthor);
     } catch (error) {
-        return res.status(500).json({
+        return res.status(400).json({
             message: "Error creating author",
             error: error.message
         });
@@ -90,7 +90,7 @@ export async function updateAuthor(req, res) {
 
         return res.status(200).json(updatedAuthor);
     } catch (error) {
-        return res.status(500).json({
+        return res.status(400).json({
             message: "Error updating author",
             error: error.message
         });
@@ -120,7 +120,8 @@ export async function deleteAuthor(req, res) {
         });
     } catch (error) {
         return res.status(500).json({
-            message: "Author deleted successfully"
+            message: "Unable to delete author",
+            error: error.message
         });
     }
 }
