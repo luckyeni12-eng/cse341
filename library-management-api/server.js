@@ -95,19 +95,6 @@ passport.use(
 );
 
 // ==========================================
-// DATABASE
-// ==========================================
-
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((error) => {
-    console.error("Database Error:", error.message);
-  });
-
-// ==========================================
 // ROOT ROUTE
 // ==========================================
 
@@ -155,12 +142,33 @@ app.use((error, req, res, next) => {
 });
 
 // ==========================================
+// EXPORT APP FOR TESTING
+// ==========================================
+
+export default app;
+
+// ==========================================
+// DATABASE CONNECTION
+// ==========================================
+
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Database Error:", error.message);
+  });
+
+// ==========================================
 // SERVER
 // ==========================================
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-  console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+  });
+}
