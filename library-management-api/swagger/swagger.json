@@ -8,12 +8,12 @@
 
   "servers": [
     {
-      "url": "http://localhost:3000",
-      "description": "Local Development Server"
-    },
-    {
       "url": "https://cse341-d605.onrender.com",
       "description": "Production Server on Render"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local Development Server"
     }
   ],
 
@@ -46,7 +46,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Enter your JWT token. Swagger UI will automatically send it as: Authorization: Bearer <token>"
+        "description": "Enter only your JWT token. Swagger UI automatically sends it as: Authorization: Bearer <token>"
       }
     },
 
@@ -540,14 +540,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Book returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Book"
-                }
-              }
-            }
+            "description": "Book returned successfully"
           },
           "400": {
             "description": "Invalid book ID"
@@ -663,17 +656,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Authors returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Author"
-                  }
-                }
-              }
-            }
+            "description": "Authors returned successfully"
           },
           "500": {
             "description": "Server error"
@@ -739,14 +722,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Author returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Author"
-                }
-              }
-            }
+            "description": "Author returned successfully"
           },
           "400": {
             "description": "Invalid author ID"
@@ -862,17 +838,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Members returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Member"
-                  }
-                }
-              }
-            }
+            "description": "Members returned successfully"
           },
           "500": {
             "description": "Server error"
@@ -938,14 +904,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Member returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Member"
-                }
-              }
-            }
+            "description": "Member returned successfully"
           },
           "400": {
             "description": "Invalid member ID"
@@ -1061,17 +1020,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Loans returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Loan"
-                  }
-                }
-              }
-            }
+            "description": "Loans returned successfully"
           },
           "500": {
             "description": "Server error"
@@ -1137,14 +1086,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Loan returned successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Loan"
-                }
-              }
-            }
+            "description": "Loan returned successfully"
           },
           "400": {
             "description": "Invalid loan ID"
