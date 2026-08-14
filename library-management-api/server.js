@@ -154,14 +154,19 @@ export default app;
 async function connectToDatabase() {
   try {
     if (!process.env.MONGODB_URI) {
-      throw new Error("MONGODB_URI is not defined in the environment variables.");
+      throw new Error(
+        "MONGODB_URI is not defined in the environment variables."
+      );
     }
 
     await mongoose.connect(process.env.MONGODB_URI);
 
     console.log("Connected to MongoDB");
+    console.log("Database name:", mongoose.connection.name);
+    console.log("MongoDB host:", mongoose.connection.host);
   } catch (error) {
     console.error("Database Error:", error.message);
+    process.exit(1);
   }
 }
 
@@ -171,17 +176,26 @@ async function connectToDatabase() {
 
 const PORT = process.env.PORT || 3000;
 
+async function startServer() {
+  try {
+    await connectToDatabase();
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+
+      if (process.env.NODE_ENV === "production") {
+        console.log("Running in production environment");
+      } else {
+        console.log(`Local API: http://localhost:${PORT}`);
+        console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+      }
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error.message);
+    process.exit(1);
+  }
+}
+
 if (process.env.NODE_ENV !== "test") {
-  connectToDatabase();
-
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-
-    if (process.env.NODE_ENV === "production") {
-      console.log("Running in production environment");
-    } else {
-      console.log(`Local API: http://localhost:${PORT}`);
-      console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
-    }
-  });
+  startServer();
 }

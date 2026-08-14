@@ -8,12 +8,12 @@
 
   "servers": [
     {
-      "url": "https://cse341-d605.onrender.com",
-      "description": "Production Server on Render"
+      "url": "http://localhost:3000",
+      "description": "Local Development Server (Default)"
     },
     {
-      "url": "http://localhost:3000",
-      "description": "Local Development Server"
+      "url": "https://cse341-d605.onrender.com",
+      "description": "Production Server on Render"
     }
   ],
 
