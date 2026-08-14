@@ -5,6 +5,7 @@
     "version": "3.0.0",
     "description": "Library Management API with MongoDB CRUD operations, data validation, JWT authorization, Google OAuth authentication, and automated testing."
   },
+
   "servers": [
     {
       "url": "http://localhost:3000",
@@ -12,17 +13,43 @@
     },
     {
       "url": "https://cse341-d605.onrender.com",
-      "description": "Production Server"
+      "description": "Production Server on Render"
     }
   ],
+
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "User registration, login, logout, and Google OAuth authentication"
+    },
+    {
+      "name": "Books",
+      "description": "Book management operations"
+    },
+    {
+      "name": "Authors",
+      "description": "Author management operations"
+    },
+    {
+      "name": "Members",
+      "description": "Library member management operations"
+    },
+    {
+      "name": "Loans",
+      "description": "Library loan management operations"
+    }
+  ],
+
   "components": {
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "Enter your JWT token. Swagger UI will automatically send it as: Authorization: Bearer <token>"
       }
     },
+
     "schemas": {
       "User": {
         "type": "object",
@@ -35,6 +62,26 @@
             "type": "string",
             "example": "admin"
           },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "admin@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "password123"
+          }
+        }
+      },
+
+      "Login": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
           "email": {
             "type": "string",
             "format": "email",
@@ -64,31 +111,31 @@
         "properties": {
           "title": {
             "type": "string",
-            "example": "The Hobbit"
+            "example": "Pride and Prejudice"
           },
           "isbn": {
             "type": "string",
-            "example": "9780261103344"
+            "example": "9780141439518"
           },
           "author": {
             "type": "string",
-            "example": "J.R.R. Tolkien"
+            "example": "Jane Austen"
           },
           "category": {
             "type": "string",
-            "example": "Fantasy"
+            "example": "Classic"
           },
           "publisher": {
             "type": "string",
-            "example": "HarperCollins"
+            "example": "Penguin Classics"
           },
           "publicationYear": {
             "type": "integer",
-            "example": 1937
+            "example": 1813
           },
           "pages": {
             "type": "integer",
-            "example": 310
+            "example": 432
           },
           "language": {
             "type": "string",
@@ -113,12 +160,12 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "J.R.R. Tolkien"
+            "example": "Jane Austen"
           },
           "email": {
             "type": "string",
             "format": "email",
-            "example": "tolkien@example.com"
+            "example": "jane.austen@example.com"
           },
           "nationality": {
             "type": "string",
@@ -126,11 +173,11 @@
           },
           "birthYear": {
             "type": "integer",
-            "example": 1892
+            "example": 1775
           },
           "biography": {
             "type": "string",
-            "example": "English writer and author of The Hobbit and The Lord of the Rings."
+            "example": "English novelist known for her novels about British society and relationships."
           }
         }
       },
@@ -235,6 +282,30 @@
             "example": 0
           }
         }
+      },
+
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login successful"
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        }
+      },
+
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Authentication required"
+          }
+        }
       }
     }
   },
@@ -243,6 +314,7 @@
     "/auth/register": {
       "post": {
         "summary": "Register a new user",
+        "description": "Creates a new user account.",
         "tags": [
           "Authentication"
         ],
@@ -261,7 +333,14 @@
             "description": "User registered successfully"
           },
           "400": {
-            "description": "User already exists or validation failed"
+            "description": "User already exists or validation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -273,6 +352,7 @@
     "/auth/login": {
       "post": {
         "summary": "Login user",
+        "description": "Authenticates a user and returns a JWT token.",
         "tags": [
           "Authentication"
         ],
@@ -281,30 +361,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "admin@gmail.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "example": "password123"
-                  }
-                }
+                "$ref": "#/components/schemas/Login"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Login successful and JWT token returned"
+            "description": "Login successful and JWT token returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Invalid credentials"
@@ -322,6 +393,7 @@
     "/auth/logout": {
       "post": {
         "summary": "Logout user",
+        "description": "Logs out an authenticated user.",
         "tags": [
           "Authentication"
         ],
@@ -365,12 +437,13 @@
     "/auth/google/callback": {
       "get": {
         "summary": "Google OAuth callback",
+        "description": "Handles the callback from Google after successful OAuth authentication.",
         "tags": [
           "Authentication"
         ],
         "responses": {
           "200": {
-            "description": "Google OAuth authentication successful and JWT token returned"
+            "description": "Google OAuth authentication successful"
           },
           "401": {
             "description": "OAuth authentication failed"
@@ -385,12 +458,23 @@
     "/books": {
       "get": {
         "summary": "Get all books",
+        "description": "Returns all books. Authentication is not required.",
         "tags": [
           "Books"
         ],
         "responses": {
           "200": {
-            "description": "Books returned successfully"
+            "description": "Books returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -400,6 +484,7 @@
 
       "post": {
         "summary": "Create a new book",
+        "description": "Creates a new book. JWT authentication is required.",
         "tags": [
           "Books"
         ],
@@ -438,6 +523,7 @@
     "/books/{id}": {
       "get": {
         "summary": "Get a single book",
+        "description": "Returns one book by its MongoDB ID. Authentication is not required.",
         "tags": [
           "Books"
         ],
@@ -446,6 +532,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
             }
@@ -453,7 +540,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Book returned successfully"
+            "description": "Book returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid book ID"
@@ -469,6 +563,7 @@
 
       "put": {
         "summary": "Update a book",
+        "description": "Updates an existing book. JWT authentication is required.",
         "tags": [
           "Books"
         ],
@@ -482,6 +577,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
             }
@@ -518,6 +614,7 @@
 
       "delete": {
         "summary": "Delete a book",
+        "description": "Deletes an existing book. JWT authentication is required.",
         "tags": [
           "Books"
         ],
@@ -531,6 +628,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB book ID",
             "schema": {
               "type": "string"
             }
@@ -559,12 +657,23 @@
     "/authors": {
       "get": {
         "summary": "Get all authors",
+        "description": "Returns all authors. Authentication is not required.",
         "tags": [
           "Authors"
         ],
         "responses": {
           "200": {
-            "description": "Authors returned successfully"
+            "description": "Authors returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Author"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -574,6 +683,7 @@
 
       "post": {
         "summary": "Create a new author",
+        "description": "Creates a new author. JWT authentication is required.",
         "tags": [
           "Authors"
         ],
@@ -612,6 +722,7 @@
     "/authors/{id}": {
       "get": {
         "summary": "Get a single author",
+        "description": "Returns one author by MongoDB ID. Authentication is not required.",
         "tags": [
           "Authors"
         ],
@@ -620,6 +731,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
             }
@@ -627,7 +739,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Author returned successfully"
+            "description": "Author returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid author ID"
@@ -643,6 +762,7 @@
 
       "put": {
         "summary": "Update an author",
+        "description": "Updates an existing author. JWT authentication is required.",
         "tags": [
           "Authors"
         ],
@@ -656,6 +776,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
             }
@@ -692,6 +813,7 @@
 
       "delete": {
         "summary": "Delete an author",
+        "description": "Deletes an existing author. JWT authentication is required.",
         "tags": [
           "Authors"
         ],
@@ -705,6 +827,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB author ID",
             "schema": {
               "type": "string"
             }
@@ -733,12 +856,23 @@
     "/members": {
       "get": {
         "summary": "Get all members",
+        "description": "Returns all members. Authentication is not required.",
         "tags": [
           "Members"
         ],
         "responses": {
           "200": {
-            "description": "Members returned successfully"
+            "description": "Members returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -748,6 +882,7 @@
 
       "post": {
         "summary": "Create a new member",
+        "description": "Creates a new member. JWT authentication is required.",
         "tags": [
           "Members"
         ],
@@ -786,6 +921,7 @@
     "/members/{id}": {
       "get": {
         "summary": "Get a single member",
+        "description": "Returns one member by MongoDB ID. Authentication is not required.",
         "tags": [
           "Members"
         ],
@@ -794,6 +930,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB member ID",
             "schema": {
               "type": "string"
             }
@@ -801,7 +938,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Member returned successfully"
+            "description": "Member returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid member ID"
@@ -817,6 +961,7 @@
 
       "put": {
         "summary": "Update a member",
+        "description": "Updates an existing member. JWT authentication is required.",
         "tags": [
           "Members"
         ],
@@ -830,6 +975,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB member ID",
             "schema": {
               "type": "string"
             }
@@ -866,6 +1012,7 @@
 
       "delete": {
         "summary": "Delete a member",
+        "description": "Deletes an existing member. JWT authentication is required.",
         "tags": [
           "Members"
         ],
@@ -879,6 +1026,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB member ID",
             "schema": {
               "type": "string"
             }
@@ -907,12 +1055,23 @@
     "/loans": {
       "get": {
         "summary": "Get all loans",
+        "description": "Returns all loans. Authentication is not required.",
         "tags": [
           "Loans"
         ],
         "responses": {
           "200": {
-            "description": "Loans returned successfully"
+            "description": "Loans returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Loan"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -922,6 +1081,7 @@
 
       "post": {
         "summary": "Create a new loan",
+        "description": "Creates a new loan. JWT authentication is required.",
         "tags": [
           "Loans"
         ],
@@ -960,6 +1120,7 @@
     "/loans/{id}": {
       "get": {
         "summary": "Get a single loan",
+        "description": "Returns one loan by MongoDB ID. Authentication is not required.",
         "tags": [
           "Loans"
         ],
@@ -968,6 +1129,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB loan ID",
             "schema": {
               "type": "string"
             }
@@ -975,7 +1137,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Loan returned successfully"
+            "description": "Loan returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loan"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid loan ID"
@@ -991,6 +1160,7 @@
 
       "put": {
         "summary": "Update a loan",
+        "description": "Updates an existing loan. JWT authentication is required.",
         "tags": [
           "Loans"
         ],
@@ -1004,6 +1174,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB loan ID",
             "schema": {
               "type": "string"
             }
@@ -1040,6 +1211,7 @@
 
       "delete": {
         "summary": "Delete a loan",
+        "description": "Deletes an existing loan. JWT authentication is required.",
         "tags": [
           "Loans"
         ],
@@ -1053,6 +1225,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "MongoDB loan ID",
             "schema": {
               "type": "string"
             }

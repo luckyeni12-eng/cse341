@@ -24,7 +24,13 @@ const app = express();
 // GENERAL MIDDLEWARE
 // ==========================================
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true
+  })
+);
+
 app.use(express.json());
 
 // ==========================================
@@ -54,9 +60,7 @@ passport.use(
 
         if (!email) {
           return done(
-            new Error(
-              "Google account does not provide an email address"
-            ),
+            new Error("Google account does not provide an email address"),
             null
           );
         }
@@ -110,13 +114,9 @@ app.get("/", (req, res) => {
 // ==========================================
 
 app.use("/books", booksRoutes);
-
 app.use("/authors", authorsRoutes);
-
 app.use("/members", membersRoutes);
-
 app.use("/loans", loansRoutes);
-
 app.use("/auth", authRoutes);
 
 // ==========================================
@@ -134,9 +134,9 @@ app.use(
 // ==========================================
 
 app.use((error, req, res, next) => {
-  console.error(error);
+  console.error("Server Error:", error);
 
-  res.status(500).json({
+  res.status(error.status || 500).json({
     message: error.message || "Internal server error"
   });
 });
@@ -151,14 +151,19 @@ export default app;
 // DATABASE CONNECTION
 // ==========================================
 
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => {
+async function connectToDatabase() {
+  try {
+    if (!process.env.MONGODB_URI) {
+      throw new Error("MONGODB_URI is not defined in the environment variables.");
+    }
+
+    await mongoose.connect(process.env.MONGODB_URI);
+
     console.log("Connected to MongoDB");
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("Database Error:", error.message);
-  });
+  }
+}
 
 // ==========================================
 // SERVER
@@ -167,8 +172,16 @@ mongoose
 const PORT = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
+  connectToDatabase();
+
   app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-    console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+    console.log(`Server running on port ${PORT}`);
+
+    if (process.env.NODE_ENV === "production") {
+      console.log("Running in production environment");
+    } else {
+      console.log(`Local API: http://localhost:${PORT}`);
+      console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
+    }
   });
 }

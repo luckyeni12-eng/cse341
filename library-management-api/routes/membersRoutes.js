@@ -8,9 +8,7 @@ import {
   deleteMember
 } from "../controllers/membersController.js";
 
-import {
-  authenticate
-} from "../middleware/authenticate.js";
+import { authenticate } from "../middleware/authenticate.js";
 
 import {
   memberValidation,
@@ -19,27 +17,27 @@ import {
 
 const router = express.Router();
 
-
+// ==========================================
 // GET ALL MEMBERS
 // Public route
+// GET /members
+// ==========================================
 
-router.get(
-  "/",
-  getMembers
-);
+router.get("/", getMembers);
 
-
+// ==========================================
 // GET SINGLE MEMBER
 // Public route
+// GET /members/:id
+// ==========================================
 
-router.get(
-  "/:id",
-  getMember
-);
+router.get("/:id", getMember);
 
-
+// ==========================================
 // CREATE MEMBER
 // Protected + validated
+// POST /members
+// ==========================================
 
 router.post(
   "/",
@@ -49,9 +47,11 @@ router.post(
   createMember
 );
 
-
+// ==========================================
 // UPDATE MEMBER
 // Protected + validated
+// PUT /members/:id
+// ==========================================
 
 router.put(
   "/:id",
@@ -61,15 +61,16 @@ router.put(
   updateMember
 );
 
-
+// ==========================================
 // DELETE MEMBER
 // Protected
+// DELETE /members/:id
+// ==========================================
 
 router.delete(
   "/:id",
   authenticate,
   deleteMember
 );
-
 
 export default router;

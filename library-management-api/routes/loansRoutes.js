@@ -8,9 +8,7 @@ import {
   deleteLoan
 } from "../controllers/loansController.js";
 
-import {
-  authenticate
-} from "../middleware/authenticate.js";
+import { authenticate } from "../middleware/authenticate.js";
 
 import {
   loanValidation,
@@ -19,27 +17,27 @@ import {
 
 const router = express.Router();
 
-
+// ==========================================
 // GET ALL LOANS
 // Public route
+// GET /loans
+// ==========================================
 
-router.get(
-  "/",
-  getLoans
-);
+router.get("/", getLoans);
 
-
+// ==========================================
 // GET SINGLE LOAN
 // Public route
+// GET /loans/:id
+// ==========================================
 
-router.get(
-  "/:id",
-  getLoan
-);
+router.get("/:id", getLoan);
 
-
+// ==========================================
 // CREATE LOAN
 // Protected + validated
+// POST /loans
+// ==========================================
 
 router.post(
   "/",
@@ -49,9 +47,11 @@ router.post(
   createLoan
 );
 
-
+// ==========================================
 // UPDATE LOAN
 // Protected + validated
+// PUT /loans/:id
+// ==========================================
 
 router.put(
   "/:id",
@@ -61,15 +61,16 @@ router.put(
   updateLoan
 );
 
-
+// ==========================================
 // DELETE LOAN
 // Protected
+// DELETE /loans/:id
+// ==========================================
 
 router.delete(
   "/:id",
   authenticate,
   deleteLoan
 );
-
 
 export default router;
