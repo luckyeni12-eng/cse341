@@ -70,7 +70,7 @@ passport.use(
           googleId: profile.id
         });
 
-        // If Google user is not found, try finding the user by email
+        // If Google user is not found, try finding user by email
         if (!user) {
           user = await User.findOne({
             email: email
@@ -84,8 +84,10 @@ passport.use(
             email: email,
             name: profile.displayName
           });
-        } else if (!user.googleId) {
-          // Link Google account to existing user
+        }
+
+        // Link Google account to existing user
+        else if (!user.googleId) {
           user.googleId = profile.id;
           await user.save();
         }
@@ -105,6 +107,7 @@ passport.use(
 app.get("/", (req, res) => {
   res.status(200).json({
     message: "Library Management API is running",
+    environment: process.env.NODE_ENV || "development",
     documentation: "/api-docs"
   });
 });
@@ -126,7 +129,10 @@ app.use("/auth", authRoutes);
 app.use(
   "/api-docs",
   swaggerUi.serve,
-  swaggerUi.setup(swaggerDocument)
+  swaggerUi.setup(swaggerDocument, {
+    explorer: true,
+    customSiteTitle: "Library Management API Documentation"
+  })
 );
 
 // ==========================================
@@ -172,7 +178,6 @@ async function connectToDatabase() {
   } catch (error) {
     console.error("Database Error:", error.message);
     throw error;
-    process.exit(1);
   }
 }
 
@@ -191,7 +196,11 @@ async function startServer() {
 
       if (process.env.NODE_ENV === "production") {
         console.log("Running in production environment");
+        console.log(
+          `Swagger UI: https://cse341-d605.onrender.com/api-docs`
+        );
       } else {
+        console.log("Running in development environment");
         console.log(`Local API: http://localhost:${PORT}`);
         console.log(`Swagger UI: http://localhost:${PORT}/api-docs`);
       }

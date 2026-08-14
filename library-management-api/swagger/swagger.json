@@ -9,7 +9,7 @@
   "servers": [
     {
       "url": "http://localhost:3000",
-      "description": "Local Development Server (Default)"
+      "description": "Local Development Server"
     },
     {
       "url": "https://cse341-d605.onrender.com",
@@ -46,7 +46,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Enter only your JWT token. Swagger UI automatically sends it as: Authorization: Bearer <token>"
+        "description": "Enter ONLY your JWT token. Do not type 'Bearer'. Swagger UI automatically adds 'Bearer'."
       }
     },
 
@@ -109,6 +109,11 @@
           "available"
         ],
         "properties": {
+          "_id": {
+            "type": "string",
+            "readOnly": true,
+            "example": "66a123456789abcdef123456"
+          },
           "title": {
             "type": "string",
             "example": "Pride and Prejudice"
@@ -144,6 +149,16 @@
           "available": {
             "type": "boolean",
             "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -158,6 +173,11 @@
           "biography"
         ],
         "properties": {
+          "_id": {
+            "type": "string",
+            "readOnly": true,
+            "example": "66a123456789abcdef123456"
+          },
           "name": {
             "type": "string",
             "example": "Jane Austen"
@@ -178,6 +198,16 @@
           "biography": {
             "type": "string",
             "example": "English novelist known for her novels about British society and relationships."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -194,6 +224,11 @@
           "active"
         ],
         "properties": {
+          "_id": {
+            "type": "string",
+            "readOnly": true,
+            "example": "66a123456789abcdef123456"
+          },
           "name": {
             "type": "string",
             "example": "John Smith"
@@ -228,6 +263,16 @@
           "active": {
             "type": "boolean",
             "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -243,6 +288,11 @@
           "fine"
         ],
         "properties": {
+          "_id": {
+            "type": "string",
+            "readOnly": true,
+            "example": "66a123456789abcdef123456"
+          },
           "member": {
             "type": "string",
             "example": "66a123456789abcdef123456"
@@ -280,6 +330,16 @@
             "type": "number",
             "minimum": 0,
             "example": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -314,7 +374,7 @@
     "/auth/register": {
       "post": {
         "summary": "Register a new user",
-        "description": "Creates a new user account.",
+        "description": "Creates a new user account. Authentication is not required.",
         "tags": [
           "Authentication"
         ],
@@ -352,7 +412,7 @@
     "/auth/login": {
       "post": {
         "summary": "Login user",
-        "description": "Authenticates a user and returns a JWT token.",
+        "description": "Authenticates a user and returns a JWT token. Authentication is not required.",
         "tags": [
           "Authentication"
         ],
@@ -393,7 +453,7 @@
     "/auth/logout": {
       "post": {
         "summary": "Logout user",
-        "description": "Logs out an authenticated user.",
+        "description": "Logs out an authenticated user. JWT authentication is required.",
         "tags": [
           "Authentication"
         ],
@@ -458,7 +518,7 @@
     "/books": {
       "get": {
         "summary": "Get all books",
-        "description": "Returns all books. Authentication is not required.",
+        "description": "Returns all books. Authentication is NOT required.",
         "tags": [
           "Books"
         ],
@@ -511,7 +571,7 @@
             "description": "Validation error"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "500": {
             "description": "Server error"
@@ -523,7 +583,7 @@
     "/books/{id}": {
       "get": {
         "summary": "Get a single book",
-        "description": "Returns one book by its MongoDB ID. Authentication is not required.",
+        "description": "Returns one book by MongoDB ID. Authentication is NOT required.",
         "tags": [
           "Books"
         ],
@@ -534,13 +594,21 @@
             "required": true,
             "description": "MongoDB book ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Book returned successfully"
+            "description": "Book returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid book ID"
@@ -572,7 +640,8 @@
             "required": true,
             "description": "MongoDB book ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -594,7 +663,7 @@
             "description": "Validation error or invalid book ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Book not found"
@@ -623,7 +692,8 @@
             "required": true,
             "description": "MongoDB book ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -635,7 +705,7 @@
             "description": "Invalid book ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Book not found"
@@ -650,13 +720,23 @@
     "/authors": {
       "get": {
         "summary": "Get all authors",
-        "description": "Returns all authors. Authentication is not required.",
+        "description": "Returns all authors. Authentication is NOT required.",
         "tags": [
           "Authors"
         ],
         "responses": {
           "200": {
-            "description": "Authors returned successfully"
+            "description": "Authors returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Author"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -693,7 +773,7 @@
             "description": "Validation error"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "500": {
             "description": "Server error"
@@ -705,7 +785,7 @@
     "/authors/{id}": {
       "get": {
         "summary": "Get a single author",
-        "description": "Returns one author by MongoDB ID. Authentication is not required.",
+        "description": "Returns one author by MongoDB ID. Authentication is NOT required.",
         "tags": [
           "Authors"
         ],
@@ -716,13 +796,21 @@
             "required": true,
             "description": "MongoDB author ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Author returned successfully"
+            "description": "Author returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Author"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid author ID"
@@ -754,7 +842,8 @@
             "required": true,
             "description": "MongoDB author ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -776,7 +865,7 @@
             "description": "Validation error or invalid author ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Author not found"
@@ -805,7 +894,8 @@
             "required": true,
             "description": "MongoDB author ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -817,7 +907,7 @@
             "description": "Invalid author ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Author not found"
@@ -832,13 +922,23 @@
     "/members": {
       "get": {
         "summary": "Get all members",
-        "description": "Returns all members. Authentication is not required.",
+        "description": "Returns all members. Authentication is NOT required.",
         "tags": [
           "Members"
         ],
         "responses": {
           "200": {
-            "description": "Members returned successfully"
+            "description": "Members returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -875,7 +975,7 @@
             "description": "Validation error"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "500": {
             "description": "Server error"
@@ -887,7 +987,7 @@
     "/members/{id}": {
       "get": {
         "summary": "Get a single member",
-        "description": "Returns one member by MongoDB ID. Authentication is not required.",
+        "description": "Returns one member by MongoDB ID. Authentication is NOT required.",
         "tags": [
           "Members"
         ],
@@ -898,13 +998,21 @@
             "required": true,
             "description": "MongoDB member ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Member returned successfully"
+            "description": "Member returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid member ID"
@@ -936,7 +1044,8 @@
             "required": true,
             "description": "MongoDB member ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -958,7 +1067,7 @@
             "description": "Validation error or invalid member ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Member not found"
@@ -987,7 +1096,8 @@
             "required": true,
             "description": "MongoDB member ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -999,7 +1109,7 @@
             "description": "Invalid member ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Member not found"
@@ -1014,13 +1124,23 @@
     "/loans": {
       "get": {
         "summary": "Get all loans",
-        "description": "Returns all loans. Authentication is not required.",
+        "description": "Returns all loans. Authentication is NOT required.",
         "tags": [
           "Loans"
         ],
         "responses": {
           "200": {
-            "description": "Loans returned successfully"
+            "description": "Loans returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Loan"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Server error"
@@ -1057,7 +1177,7 @@
             "description": "Validation error"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "500": {
             "description": "Server error"
@@ -1069,7 +1189,7 @@
     "/loans/{id}": {
       "get": {
         "summary": "Get a single loan",
-        "description": "Returns one loan by MongoDB ID. Authentication is not required.",
+        "description": "Returns one loan by MongoDB ID. Authentication is NOT required.",
         "tags": [
           "Loans"
         ],
@@ -1080,13 +1200,21 @@
             "required": true,
             "description": "MongoDB loan ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Loan returned successfully"
+            "description": "Loan returned successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Loan"
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid loan ID"
@@ -1118,7 +1246,8 @@
             "required": true,
             "description": "MongoDB loan ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -1140,7 +1269,7 @@
             "description": "Validation error or invalid loan ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Loan not found"
@@ -1169,7 +1298,8 @@
             "required": true,
             "description": "MongoDB loan ID",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "66a123456789abcdef123456"
             }
           }
         ],
@@ -1181,7 +1311,7 @@
             "description": "Invalid loan ID"
           },
           "401": {
-            "description": "Authentication required"
+            "description": "Authentication required or invalid token"
           },
           "404": {
             "description": "Loan not found"
