@@ -159,6 +159,11 @@ async function connectToDatabase() {
       );
     }
 
+    console.log(
+      "MONGODB_URI prefix:",
+      JSON.stringify(process.env.MONGODB_URI.substring(0, 14))
+    );
+
     await mongoose.connect(process.env.MONGODB_URI);
 
     console.log("Connected to MongoDB");
@@ -166,6 +171,7 @@ async function connectToDatabase() {
     console.log("MongoDB host:", mongoose.connection.host);
   } catch (error) {
     console.error("Database Error:", error.message);
+    throw error;
     process.exit(1);
   }
 }
